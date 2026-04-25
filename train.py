@@ -37,9 +37,9 @@ DEFAULT_CONFIG = {
         "seed": 42,
     },
     "data": {
-        "train_path": "data/training_pairs.jsonl",
-        "eval_path": "data/eval_pairs.jsonl",
-        "eval_split": 0.1,  # if no separate eval file, hold out 10%
+        "train_path": "data/train.jsonl",
+        "eval_path": "data/eval.jsonl",
+        "eval_split": 0,  # 0 because we use family-holdout split from prepare_training_split.py
     },
     "output_dir": "models/vehicle-slm-v0",
     "quantize_on_save": True,

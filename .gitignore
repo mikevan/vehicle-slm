@@ -20,3 +20,5 @@ models/
 Thumbs.db
 Desktop.ini
 "@ | Set-Content .gitignore
+data/train.jsonl
+data/eval.jsonl
