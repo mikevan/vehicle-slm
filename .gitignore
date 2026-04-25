@@ -1,0 +1,22 @@
+@"
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Data (generated and large)
+data/opendbc/
+data/training_pairs.jsonl
+data/eval_pairs.jsonl
+data/test_training_pairs.jsonl
+data/opendbc_inventory.json
+data/captures/
+
+# Models (large binaries)
+models/
+
+# OS
+Thumbs.db
+Desktop.ini
+"@ | Set-Content .gitignore

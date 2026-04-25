@@ -1,0 +1,37 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: ECM BCM ABS EPS
+
+BO_ 256 EngineData: 8 ECM
+ SG_ EngineRPM : 0|16@1+ (0.25,0) [0|16383.75] "rpm" Vector__XXX
+ SG_ ThrottlePosition : 16|8@1+ (0.392157,0) [0|100] "%" Vector__XXX
+ SG_ EngineTemp : 24|8@1+ (1,-40) [-40|215] "C" Vector__XXX
+
+BO_ 320 BrakeControl: 8 ABS
+ SG_ BrakePressure : 0|16@1+ (0.1,0) [0|6553.5] "kPa" Vector__XXX
+ SG_ BrakePedalPos : 16|8@1+ (0.392157,0) [0|100] "%" Vector__XXX
+ SG_ ABSActive : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 384 SteeringControl: 8 EPS
+ SG_ SteeringAngle : 0|16@1+ (0.1,-3276.8) [-3276.8|3276.7] "deg" Vector__XXX
+ SG_ SteeringTorque : 16|8@1+ (0.01,-1.28) [-1.28|1.27] "Nm" Vector__XXX
+ SG_ EPSStatus : 24|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 512 VehicleSpeed: 8 BCM
+ SG_ VehSpeed : 0|16@1+ (0.01,0) [0|655.35] "km/h" Vector__XXX
+ SG_ WheelSpeedFL : 16|12@1+ (0.05,0) [0|204.75] "km/h" Vector__XXX
+ SG_ WheelSpeedFR : 28|12@1+ (0.05,0) [0|204.75] "km/h" Vector__XXX
+
+BO_ 640 TransmissionData: 8 ECM
+ SG_ GearPosition : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ TransTemp : 4|8@1+ (1,-40) [-40|215] "C" Vector__XXX
+
+BO_ 768 LightControl: 4 BCM
+ SG_ HeadlightState : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ TurnSignalLeft : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ TurnSignalRight : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ HighBeamActive : 4|1@1+ (1,0) [0|1] "" Vector__XXX

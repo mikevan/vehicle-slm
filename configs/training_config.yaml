@@ -1,0 +1,36 @@
+# Vehicle SLM Training Configuration
+# ──────────────────────────────────
+# Recommended starting point for Sprint 0.
+# Tune after initial results on the eval harness.
+
+base_model: "unsloth/Phi-3-mini-4k-instruct-bnb-4bit"
+# Alternatives:
+#   unsloth/Qwen2.5-3B-Instruct-bnb-4bit   — slightly smaller, good at hex
+#   unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit — fits easily on 8GB VRAM
+
+training:
+  max_seq_length: 2048
+  lora_rank: 32        # higher = more capacity, more VRAM
+  lora_alpha: 32       # typically matches rank
+  lora_dropout: 0.0
+  learning_rate: 2.0e-5
+  num_epochs: 3
+  batch_size: 2
+  gradient_accumulation_steps: 4  # effective batch = 8
+  warmup_steps: 10
+  weight_decay: 0.01
+  max_grad_norm: 0.3
+  seed: 42
+
+data:
+  train_path: "data/training_pairs.jsonl"
+  eval_path: "data/eval_pairs.jsonl"
+  eval_split: 0.1     # if no separate eval file, hold out 10% randomly
+
+  # For proper family-level holdout eval:
+  # holdout_families:
+  #   - subaru
+  #   - mazda
+
+output_dir: "models/vehicle-slm-v0"
+quantize_on_save: true  # save merged 4-bit for edge deployment
