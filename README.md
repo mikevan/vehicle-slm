@@ -144,7 +144,7 @@ RESPONSE:
 |-----------|----------|-----------------|
 | Training GPU | RTX 2070 (8GB) w/ QLoRA | 24GB+ preferred |
 | Inference | Same GPU or CPU | Jetson Orin / dedicated |
-| CAN hardware | Matt's ESP32 board | Same |
+| CAN hardware | CAN Commander https://rabbit-labs.com/product/cancommander/ | Same |
 | Training time | ~2-4 hrs (1k examples, 3 epochs) | Scales with data |
 
 ## Key Design Decisions
