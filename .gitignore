@@ -22,3 +22,6 @@ Desktop.ini
 "@ | Set-Content .gitignore
 data/train.jsonl
 data/eval.jsonl
+
+data/train.jsonl
+data/eval.jsonl
