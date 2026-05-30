@@ -1,62 +1,56 @@
----
-base_model: Qwen/Qwen2.5-1.5B-Instruct
-library_name: peft
-model_name: vehicle-slm-v0
-tags:
-- base_model:adapter:Qwen/Qwen2.5-1.5B-Instruct
-- lora
-- sft
-- transformers
-- trl
-licence: license
-pipeline_tag: text-generation
----
+# Vehicle SLM v0
 
-# Model Card for vehicle-slm-v0
+A QLoRA fine-tuned version of [Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) trained to generate CAN bus command frames from vehicle metadata, observed traffic, and operator intent.
 
-This model is a fine-tuned version of [Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct).
-It has been trained using [TRL](https://github.com/huggingface/trl).
+## What This Model Does
 
-## Quick start
+Given a vehicle type, a snippet of raw CAN bus traffic, and a command intent (e.g. "brake_full", "steer_left", "throttle_release"), the model generates the CAN frame needed to execute that command on the target vehicle.
+
+This model does not perform a dictionary lookup. It generates frames directly from internalized knowledge of how manufacturers encode control signals — the same way a fluent speaker produces language without consulting a grammar textbook.
+
+## Quick Start
 
 ```python
-from transformers import pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
 
-question = "If you had a time machine, but could only go to the past or the future once and never return, which would you choose and why?"
-generator = pipeline("text-generation", model="None", device="cuda")
-output = generator([{"role": "user", "content": question}], max_new_tokens=128, return_full_text=False)[0]
-print(output["generated_text"])
+base_model = "Qwen/Qwen2.5-1.5B-Instruct"
+adapter_path = "mikevan/vehicle-slm/models/vehicle-slm-v0"
+
+tokenizer = AutoTokenizer.from_pretrained(base_model)
+model = AutoModelForCausalLM.from_pretrained(base_model)
+model = PeftModel.from_pretrained(model, adapter_path)
+
+prompt = """<|system|>
+You are a Vehicle CAN Bus Command Generator.<|end|>
+<|user|>
+<vehicle>toyota_camry_2019</vehicle>
+<traffic>
+0x025:00:00:00:00:00:00:00:00
+0x0B4:00:00:00:00:00:00:00:00
+</traffic>
+<intent>brake_full</intent><|end|>
+<|assistant|>"""
+
+inputs = tokenizer(prompt, return_tensors="pt")
+outputs = model.generate(**inputs, max_new_tokens=128)
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 ```
 
-## Training procedure
+## Training
 
- 
+- **Base model:** Qwen/Qwen2.5-1.5B-Instruct
+- **Method:** QLoRA (4-bit quantization, LoRA rank 32)
+- **Dataset:** 3,675 training pairs derived from the commaai/opendbc DBC corpus spanning 14 manufacturer families
+- **Eval set:** 432 examples held out by manufacturer family (Subaru, Mazda)
+- **Final eval token accuracy:** 72.7%
+- **Hardware:** NVIDIA A40 48GB
+- **Training time:** 77 minutes
 
-
-
-This model was trained with SFT.
-
-### Framework versions
+## Framework Versions
 
 - PEFT 0.19.1
-- TRL: 1.5.1
-- Transformers: 5.9.0
-- Pytorch: 2.10.0
-- Datasets: 4.8.5
-- Tokenizers: 0.22.2
+- TRL 1.5.1
+- Transformers 5.9.0
+- PyTorch 2.10.0
 
-## Citations
-
-
-
-Cite TRL as:
-    
-```bibtex
-@software{vonwerra2020trl,
-  title   = {{TRL: Transformers Reinforcement Learning}},
-  author  = {von Werra, Leandro and Belkada, Younes and Tunstall, Lewis and Beeching, Edward and Thrush, Tristan and Lambert, Nathan and Huang, Shengyi and Rasul, Kashif and Gallouédec, Quentin},
-  license = {Apache-2.0},
-  url     = {https://github.com/huggingface/trl},
-  year    = {2020}
-}
-```
